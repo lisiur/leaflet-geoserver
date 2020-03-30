@@ -1,0 +1,28 @@
+{
+  "name": "leaflet-geoserver",
+  "version": "1.0.0",
+  "description": "leaflet-geoserver",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lisiur/leaflet-geoserver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lisiur/leaflet-geoserver/issues"
+  },
+  "homepage": "https://github.com/lisiur/leaflet-geoserver#readme",
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
