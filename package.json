@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "description": "leaflet-geoserver",
   "main": "index.js",
+  "types": "types/leaflet-geoserver.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx webpack --mode=development --watch",
+    "build": "npx webpack --mode=production"
   },
   "repository": {
     "type": "git",
@@ -18,11 +20,22 @@
   },
   "homepage": "https://github.com/lisiur/leaflet-geoserver#readme",
   "devDependencies": {
-    "cz-conventional-changelog": "^3.1.0"
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0",
+    "babel-loader": "^8.1.0",
+    "cz-conventional-changelog": "^3.1.0",
+    "leaflet": "^1.6.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "xml-js": "^1.6.11"
   }
 }
