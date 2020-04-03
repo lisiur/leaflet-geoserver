@@ -1,4 +1,5 @@
 const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
 
 function resolvePath(...args) {
   return path.resolve(__dirname, ...args)
@@ -12,10 +13,13 @@ module.exports = {
     library: 'LG',
     libraryTarget: 'umd',
   },
+  externals: {
+    leaflet: 'L'
+  },
   module: {
     rules: [
       {
-        test: /\.m?js$/,
+        test: /\.js|\.ts$/,
         exclude: /node_modules/,
         use: 'babel-loader'
       },
@@ -25,4 +29,9 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   devtool: 'inline-source-map',
+  plugins: [
+    new CopyPlugin([
+      {from: resolvePath('src/typings'), to: resolvePath('dist/types/typings')},
+    ])
+  ],
 }
