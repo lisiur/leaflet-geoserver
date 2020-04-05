@@ -586,36 +586,35 @@ function generateSyntaxTree(input: string): SyntaxNode<Expression> | null {
   }
 }
 
+/**
+ * 合并对象，有相同 key 则合并为数组
+ */
+function merge(obj1: any, obj2: any) {
+  const obj = { ...obj1 }
+  Object.keys(obj2).forEach(key => {
+    const value1 = Array.isArray(obj1[key]) ? obj1[key] : [obj1[key]]
+    const value2 = Array.isArray(obj2[key]) ? obj2[key] : [obj2[key]]
+    obj[key] = value1.concat(value2)
+  })
+  return obj
+}
+
 function translateSyntaxTree(node: SyntaxNode<Expression>, parentType: string = null): OGC.Filter {
   if (!node || !node.value) {
     return null
   }
-  if (node.value.type === 'AND') {
-    if (parentType === 'AND') {
-      return {
-        ...translateSyntaxTree(node.left, 'AND'),
-        ...translateSyntaxTree(node.right),
-      }
+  if (node.value.type === 'AND' || node.value.type === 'OR') {
+    if (parentType === node.value.type) {
+      return merge(
+        translateSyntaxTree(node.left, node.value.type),
+        translateSyntaxTree(node.right),
+      )
     } else {
       return {
-        'And': {
-          ...translateSyntaxTree(node.left, 'AND'),
-          ...translateSyntaxTree(node.right),
-        }
-      }
-    }
-  } else if (node.value.type === 'OR') {
-    if (parentType === 'OR') {
-      return {
-        ...translateSyntaxTree(node.left, 'OR'),
-        ...translateSyntaxTree(node.right),
-      }
-    } else {
-      return {
-        'Or': {
-          ...translateSyntaxTree(node.left, 'OR'),
-          ...translateSyntaxTree(node.right),
-        }
+        [node.value.type.toLowerCase().replace(/^\S/, (s: string) => s.toUpperCase())]: merge(
+          translateSyntaxTree(node.left, node.value.type),
+          translateSyntaxTree(node.right),
+        )
       }
     }
   } else if (node.value.type === 'singleExpression') {
@@ -656,6 +655,7 @@ function translateSyntaxTree(node: SyntaxNode<Expression>, parentType: string = 
         }
       }
       case 'IN': {
+        // 只有一个值
         if ((node.value.tokens[1].length === 1)) {
           const literal = node.value.tokens[1][0]
           return {
@@ -665,6 +665,7 @@ function translateSyntaxTree(node: SyntaxNode<Expression>, parentType: string = 
             }
           }
         }
+        // 多个值
         return {
           'Or': {
             'PropertyIsEqualTo': node.value.tokens[1].map(literal => ({

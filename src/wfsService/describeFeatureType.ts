@@ -1,20 +1,25 @@
 import L from 'leaflet'
-import { FeatureCollection } from '../typings/geometry'
 
-export interface GetFeatureParams {
+export interface DescribeFeatureTypeParams {
   wfsUrl: string
   layers: string
-  cqlFilter: string
 }
 
-export default async function getFeature(params: GetFeatureParams): Promise<FeatureCollection> {
+export default async function describeFeatureType(params: DescribeFeatureTypeParams): Promise<{
+  featureTypes: Array<{
+    typeName: string
+    properties: Array<{
+      name: string
+      localType: string
+    }>
+  }>
+}> {
   const queryParams = {
     service: 'wfs',
     version: '2.0.0',
-    request: 'GetFeature',
+    request: 'DescribeFeatureType',
     outputFormat: 'application/json',
     typeNames: params.layers,
-    cql_filter: params.cqlFilter,
   }
   Object.entries(queryParams).forEach(([key, value]) => {
     if (value === void 0) {

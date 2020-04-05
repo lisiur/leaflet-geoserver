@@ -1,14 +1,17 @@
 import md5 from 'blueimp-md5'
-import { SLD } from './typings/SLD'
+import { SLD } from './typings/SLD.d'
 import js2xml from 'xml-js/lib/js2xml.js'
-import { GeneralStyle } from './typings/style'
+import { GeneralStyle } from './typings/style.d'
 import { generateOGCDefinition } from './OGCParser'
 import { generateXMLTagText } from './utils'
 
-interface Options {
+export interface Options {
   encoding: string
 }
 
+export {
+  GeneralStyle
+}
 
 function generateSLDDefinition(params: GeneralStyle, options: Options): SLD.Definition {
   const layerName = md5(JSON.stringify(arguments))
