@@ -1,43 +1,55 @@
-const mapInstance = L.map('map').setView([31, 120], 8)
-const wmsUrl = 'http://127.0.0.1:18080/geoserver/test/wms'
+const mapInstance = L.map('map').setView([31, 120], 9)
+const wmsUrl = 'http://172.20.131.87:3000/geoserver/test/wms'
+const wfsUrl = 'http://172.20.131.87:3000/geoserver/test/wfs'
+const layer = 'test:chance_point'
 
 L.tileLayer.chinaProvider('TianDiTu.Normal.Map',{maxZoom:18,minZoom:3}).addTo(mapInstance);
 
-LG.getFeatureInfo({
-  wmsUrl: 'http://172.20.131.87:3000/geoserver/test/wms',
+const lg = new LG.create({
   map: mapInstance,
-  latLng: {
-    lat: 31.252435,
-    lng: 121.396169,
-  },
-  layers: 'test:t_competitor_fast',
+  srs: 'EPSG:4326',
+  wmsUrl,
+  wfsUrl,
 })
 
-LG.getCapabilities({
-  wmsUrl: 'http://172.20.131.87:3000/geoserver/test/wms',
+lg.getBounds({
+  layers: layer
+}).then(bounds => {
+  mapInstance.fitBounds(bounds, {
+    padding: [64, 64],
+  })
+})
+
+lg.getDataByLatLng({
+  latLng: {
+    lat: 31.229052,
+    lng: 121.517899,
+  },
+  layers: layer,
 }).then(data => {
   console.log(data)
 })
 
-LG.getFeature({
-  wfsUrl: 'http://172.20.131.87:3000/geoserver/test/wfs',
-  layers: 'test:t_competitor_fast',
+lg.getDataByLayer({
+  layers: layer,
+}, {pull: true}).then(data => {
+  console.log(data)
 })
 
 const sld = LG.generateSLDXml({
   point: [
     {
-      filter: 'space>=68 && id==1068 && name==梅岭北路1259号 ',
+      filter: 'district == 静安区',
       style: {
         iconUrl: 'https://cdn2.iconfinder.com/data/icons/20-flat-general-pack/512/Location-512.png',
-        iconSize: 16,
+        iconSize: 20,
       },
     },
     {
-      filter: 'space<68',
+      filter: 'district != 静安区',
       style: {
         iconUrl: 'https://cdn2.iconfinder.com/data/icons/20-flat-general-pack/512/Cross-512.png',
-        iconSize: 12,
+        iconSize: 20,
       },
     },
   ]
@@ -57,7 +69,7 @@ const sld = LG.generateSLDXml({
   const styles = await res.text()
 
   L.tileLayer.wms(wmsUrl, {
-    layers: 'test:t_competitor_fast',
+    layers: layer,
     format: 'image/png',
     transparent: true,
     styles,
