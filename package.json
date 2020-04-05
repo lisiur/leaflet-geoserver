@@ -2,7 +2,7 @@
   "name": "leaflet-geoserver",
   "version": "0.0.1",
   "description": "leaflet-geoserver",
-  "main": "index.js",
+  "main": "dist/leaflet-geoserver.js",
   "types": "types/leaflet-geoserver.d.ts",
   "scripts": {
     "dev": "npx webpack --mode=development --watch",
